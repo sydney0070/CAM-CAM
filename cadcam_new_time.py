@@ -1,3 +1,5 @@
+import math
+
 # Assumptions and constants
 build_time_percentage = 0.7  # Build Time is 70% of the total production time
 total_production_time = 3500  # Total production time in hours (hidden in logic)
