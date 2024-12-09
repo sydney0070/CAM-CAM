@@ -1,5 +1,3 @@
-import math
-
 # Assumptions and constants
 build_time_percentage = 0.7  # Build Time is 70% of the total production time
 total_production_time = 3500  # Total production time in hours (hidden in logic)
@@ -33,23 +31,23 @@ recoat_times = {
     "SS316L_AlSi10Mg": (12 + 12) / 2  # Average for Special Steel
 }
 
-# Cylinder dimensions
-diameter = 530  # mm
-radius = diameter / 2  # mm
-height = 530  # mm (assuming height equals diameter)
+# Scaled cylinder dimensions (60% of original FJ44 engine dimensions)
+scaled_diameter = 530 * 0.6  # mm
+scaled_radius = scaled_diameter / 2  # mm
+scaled_height = 1050 * 0.6  # mm
 
 # Volume calculation
-volume = math.pi * radius**2 * height  # mm³
+scaled_volume = math.pi * scaled_radius**2 * scaled_height  # mm³
 
 # Calculate original Build Time for each material
 build_times = {}
 original_total_build_time = 0
 
 for material, proportion in proportions.items():
-    material_volume = volume * proportion  # Volume for the material
+    material_volume = scaled_volume * proportion  # Volume for the material
     build_time = (
         material_volume / (build_rates[material] * 0.8)  # Build Rate adjusted by 80% efficiency
-    ) + (height / layer_heights[material]) * recoat_times[material] / 3600  # Hours
+    ) + (scaled_height / layer_heights[material]) * recoat_times[material] / 3600  # Hours
     build_times[material] = build_time
     original_total_build_time += build_time
 
@@ -60,5 +58,5 @@ scaling_factor = adjusted_total_build_time / original_total_build_time
 adjusted_build_times = {material: time * scaling_factor for material, time in build_times.items()}
 adjusted_build_times["Adjusted Total"] = sum(adjusted_build_times.values())  # Adjusted total build time
 
+# Print the adjusted total build time
 print(f"총 Adjusted Build Time: {adjusted_build_times['Adjusted Total']:.0f}시간")
-
